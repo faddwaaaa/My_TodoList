@@ -4,40 +4,32 @@ require "koneksi.php";
 
 if (!isset($_SESSION['id_user'])) {
     header("Location: login.php");
-    exit();
+    exit;
 }
-
 $id_user = $_SESSION['id_user'];
 
 if (isset($_GET['fav'])) {
     $id = $_GET['fav'];
-    if (!isset($_SESSION['favorite'][$id])) {
-        $_SESSION['favorite'][$id] = 1;
-    } else {
-        $_SESSION['favorite'][$id] = $_SESSION['favorite'][$id] == 1 ? 0 : 1;
-    }
-    header("Location: index.php");  
-    exit();
+    $_SESSION['favorite'][$id] = $_SESSION['favorite'][$id] ?? 0;
+    $_SESSION['favorite'][$id] = $_SESSION['favorite'][$id] ? 0 : 1;
+    header("Location: index.php");
+    exit;
 }
 
-$favorit = isset($_GET['favorite']) && $_GET['favorite'] == 1;
-$where = "WHERE t.id_user = '$id_user'";
+$where = "WHERE t.id_user='$id_user'";
+if (!empty($_GET['category'])) $where .= " AND t.id_category='{$_GET['category']}'";
+if (!empty($_GET['status']))   $where .= " AND t.status='{$_GET['status']}'";
 
-if (!empty($_GET['category'])) {
-    $where .= " AND t.id_category = '{$_GET['category']}'";
-}
-if (!empty($_GET['status'])) {
-    $where .= " AND t.status = '{$_GET['status']}'";
-}
-$sql = "SELECT t.*, c.category AS nama_kategori
-        FROM todo t
-        LEFT JOIN category c ON t.id_category = c.id_category
-        $where
-        ORDER BY t.id_todo DESC";
+$sql = "SELECT t.*, c.category 
+        FROM todo t 
+        LEFT JOIN category c ON t.id_category=c.id_category
+        $where ORDER BY t.id_todo DESC";
 
-$query   = mysqli_query($koneksi, $sql);
+$query    = mysqli_query($koneksi, $sql);
 $kategori = mysqli_query($koneksi, "SELECT * FROM category");
+$favorit  = $_GET['favorite'] ?? 0;
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -97,7 +89,7 @@ $kategori = mysqli_query($koneksi, "SELECT * FROM category");
         <div class="todo-card <?= $todo['status']=='Done'?'done':'' ?>">
             <h4 style="<?= $todo['status']=='Done'?'text-decoration: line-through;':'' ?>"><?= $todo['title'] ?></h4>
             <small style="<?= $todo['status']=='Done'?'text-decoration: line-through;':'' ?>"><?= $todo['description'] ?></small>
-            <p style="<?= $todo['status']=='Done'?'text-decoration: line-through;':'' ?>"><strong>Kategori: </strong><?= $todo['nama_kategori'] ?></p>
+            <p style="<?= $todo['status']=='Done'?'text-decoration: line-through;':'' ?>"><strong>Kategori: </strong><?= $todo['category'] ?></p>
             <p style="<?= $todo['status']=='Done'?'text-decoration: line-through;':'' ?>"><strong>Status: </strong><?= $todo['status'] ?></p>
             <div class="todo-action">
                 <a href="edit.php?id_todo=<?= $todo['id_todo'] ?>" class="edit">Edit</a>
