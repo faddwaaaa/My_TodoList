@@ -9,7 +9,9 @@
 </head>
 <body>
     <nav>
-        <a href="index.php">TodoList</a>
+        <div class="nav-left">
+            <a href="index.php">TodoList</a>
+        </div>
     </nav>
 </body>
 </html>
