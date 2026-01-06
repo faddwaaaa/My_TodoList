@@ -30,7 +30,6 @@ $kategori = mysqli_query($koneksi, "SELECT * FROM category");
 $favorit  = $_GET['favorite'] ?? 0;
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,7 +66,7 @@ $favorit  = $_GET['favorite'] ?? 0;
                 </select>
             </form>
         </div>
-        <div class="status-favorite">
+        <div class="favorite-filter">
             <form action="" method="get">
             <label>Filter Bookmark</label>
                 <select name="favorite" onchange="this.form.submit()">
@@ -79,7 +78,7 @@ $favorit  = $_GET['favorite'] ?? 0;
         <center>
         <button onclick="window.print()" style="background: #5c5e5c;">Print</button>
         <br><a href="tambah.php"><button style="background: #0c8f3e; margin-top: 5px;">(+) Tambah</button></a><br><br></center>
-    </div>
+    </div>  
     <div class="todo-wrapper">
         <?php while ($todo = mysqli_fetch_assoc($query)) { ?>
         <?php
